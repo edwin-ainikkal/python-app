@@ -15,25 +15,17 @@ pipeline {
         }
 
         stage('Install Dependencies') {
-    steps {
-        echo "Installing dependencies..."
-        sh """
-            set -e
-            echo "Using Python: $(which ${PYTHON_VERSION})"
-            ${PYTHON_VERSION} --version
-
-            # Create virtual environment
-            ${PYTHON_VERSION} -m venv venv || (echo "venv failed. Try installing python3-venv package." && exit 1)
-
-            # Activate virtual environment and install
-            . venv/bin/activate
-            echo "Python in venv: $(which python)"
-            pip install --upgrade pip
-            pip install -r requirements.txt
-        """
-    }
-}
-
+            steps {
+                echo "Installing dependencies..."
+                sh '''#!/bin/bash
+                    set -e &&
+                    python3 -m venv venv &&
+                    . venv/bin/activate &&
+                    pip install --upgrade pip &&
+                    pip install -r requirements.txt
+                '''
+            }
+        }
 
         stage('Run Tests') {
             when {
